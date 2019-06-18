@@ -10,6 +10,23 @@ class App extends Component {
     citas: []
   }
 
+  //cuando la aplicación carga
+  //Para convertirlo en un arreglo y lo mantiene en "Administra tus citas"
+  componentDidMount() {
+    const citasLS = localStorage.getItem('citas');
+    if(citasLS) {
+      this.setState({
+        citas : JSON.parse(citasLS)
+      })
+    }
+  }
+
+  //AQui es donde habrá que poner el código para añadirlo a Firebase
+  //cuando eliminamos o agregamos una nueva cita para agregarla al LocalStorage 
+  componentDidUpdate() {
+    localStorage.setItem('citas', JSON.stringify(this.state.citas));
+  }
+
   crearNuevaCita = datos => {
     //copiar el state actual
     const citas = [...this.state.citas, datos];
@@ -19,6 +36,24 @@ class App extends Component {
       citas
     })
   }
+
+  //elimina las citas del state
+  eliminarCita = id => {
+      //tomar copia del state
+
+      const citasActuales = [...this.state.citas];
+
+
+      //utilizar filter para sacar el elemento id @id del arreglo
+      const citas = citasActuales.filter(cita => cita.id !== id) 
+
+      //actualizar del state
+      this.setState({
+        citas
+      })
+
+  }
+
 
   render() {
     return ( 
@@ -36,6 +71,7 @@ class App extends Component {
           <div className="mt-5 col-md-10 mx-auto">
             <ListaCitas 
               citas={this.state.citas}
+              eliminarCita={this.eliminarCita}
             />
           </div>
         </div>
